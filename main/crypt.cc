@@ -6,7 +6,7 @@
 
 #include <iostream>
 #include "libs/common/Cipher.h"
-#include "libs/caesar/CaesarCipher.cpp"
+#include "libs/caesar/CaesarCipher.h"
 
 
 int main(int argc, char** argv) {
@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
 
     auto encryptedText = cipher->encrypt(toEncrypt);
 
-    std::cout << "encrypted: " << toEncrypt << std::endl;
+    std::cout << "encrypted: " << encryptedText << std::endl;
     std::cout << "decrypted: " << cipher->decrypt(encryptedText) << std::endl;
 }
 
