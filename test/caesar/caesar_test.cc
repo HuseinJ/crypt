@@ -21,7 +21,7 @@ EXPECT_EQ(cipher.decrypt("Zruog"), "World");
 }
 
 /*
- * edge case tests: wrap around
+ * edge case tests
  */
 
 TEST(CaesarCipherTest, EncryptWrapAroundTest) {

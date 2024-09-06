@@ -1,0 +1,7 @@
+cc_library(
+    name = "OXRCipher",
+    srcs = ["XORCipher.cc"],
+    hdrs = ["XORCipher.h"],
+    deps = ["//libs/common:Common"],
+    visibility = ["//main:__pkg__", "//test:__subpackages__"],
+)

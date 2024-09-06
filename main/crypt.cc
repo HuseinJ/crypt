@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include "libs/common/Cipher.h"
 #include "libs/caesar/CaesarCipher.h"
+#include "libs/xor/XORCipher.h"
 
 // Function to display usage
 void printUsage() {
@@ -23,6 +24,8 @@ void printUsage() {
 std::unique_ptr<Cipher> createCipher(const std::string& cipherName, int shift) {
     if (cipherName == "caesar") {
         return std::make_unique<CaesarCipher>(shift);
+    } else if (cipherName == "xor")  {
+        return std::make_unique<XORCipher>("somerandomkey");
     } else {
         throw std::invalid_argument("Unknown cipher type: " + cipherName);
     }
@@ -53,7 +56,7 @@ void parseArguments(int argc, char** argv, std::string& cipherName, int& shift, 
                 exit(1);
             }
         } else {
-            text = arg;  // Assume the remaining argument is the text to encrypt/decrypt
+            text = arg;
         }
     }
 
