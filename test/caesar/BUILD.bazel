@@ -1,0 +1,10 @@
+cc_test(
+    name = "caesar_test",
+    size = "small",
+    srcs = ["caesar_test.cc"],
+    deps = [
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+        "//libs/caesar:CaesarCipher"
+    ],
+)
