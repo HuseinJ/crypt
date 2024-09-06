@@ -1,6 +1,3 @@
-//
-// Created by Husein Jusic on 05.09.24.
-//
 #ifndef CRYPT_CRYPT_H
 #define CRYPT_CRYPT_H
 
@@ -18,21 +15,25 @@ void printUsage() {
     std::cout << "  crypt -c <cipher> -s <params> <text>\n\n";
     std::cout << "Ciphers available:\n";
     std::cout << "  caesar          Use Caesar cipher with specified shift (e.g., 1, 2, 3, etc.)\n";
+    std::cout << "  xor             Use XOR cipher with a specified key (e.g., 'mykey')\n";
 }
 
 // Function to create the cipher based on user input
-std::unique_ptr<Cipher> createCipher(const std::string& cipherName, int shift) {
+std::unique_ptr<Cipher> createCipher(const std::string& cipherName, const std::string& param) {
     if (cipherName == "caesar") {
+        // Convert the parameter to an integer for Caesar cipher
+        int shift = std::stoi(param);
         return std::make_unique<CaesarCipher>(shift);
     } else if (cipherName == "xor")  {
-        return std::make_unique<XORCipher>("somerandomkey");
+        // Use the string as the key for XOR cipher
+        return std::make_unique<XORCipher>(param);
     } else {
         throw std::invalid_argument("Unknown cipher type: " + cipherName);
     }
 }
 
 // Function to parse command-line arguments
-void parseArguments(int argc, char** argv, std::string& cipherName, int& shift, std::string& text) {
+void parseArguments(int argc, char** argv, std::string& cipherName, std::string& param, std::string& text) {
     if (argc < 6) {
         printUsage();
         exit(1);
@@ -48,11 +49,11 @@ void parseArguments(int argc, char** argv, std::string& cipherName, int& shift, 
                 std::cerr << "Error: -c option requires a cipher type.\n";
                 exit(1);
             }
-        } else if (arg == "-p") {
+        } else if (arg == "-s") {
             if (i + 1 < argc) {
-                shift = std::stoi(argv[++i]);
+                param = argv[++i];
             } else {
-                std::cerr << "Error: -p option requires param value.\n";
+                std::cerr << "Error: -s option requires a parameter value.\n";
                 exit(1);
             }
         } else {
@@ -67,6 +68,12 @@ void parseArguments(int argc, char** argv, std::string& cipherName, int& shift, 
         exit(1);
     }
 
+    if (param.empty()) {
+        std::cerr << "Error: No parameter provided with -s option.\n";
+        printUsage();
+        exit(1);
+    }
+
     if (text.empty()) {
         std::cerr << "Error: No text provided for encryption/decryption.\n";
         printUsage();
@@ -76,15 +83,15 @@ void parseArguments(int argc, char** argv, std::string& cipherName, int& shift, 
 
 int main(int argc, char** argv) {
     std::string cipherName;
-    int shift = 0;
+    std::string param;  // Can be an integer (for Caesar) or a string (for XOR)
     std::string text;
 
     // Parse the command-line arguments
-    parseArguments(argc, argv, cipherName, shift, text);
+    parseArguments(argc, argv, cipherName, param, text);
 
     try {
         // Create the cipher dynamically based on the user's input
-        std::unique_ptr<Cipher> cipher = createCipher(cipherName, shift);
+        std::unique_ptr<Cipher> cipher = createCipher(cipherName, param);
 
         // Encrypt and decrypt the text
         std::string encryptedText = cipher->encrypt(text);
